@@ -17,7 +17,7 @@ async functionName(req: Request, res: Response) {
   try {
     //code
   } catch(e: Error | any) {
-    handleHTTP(res, e.message, 500)
+    handleHTTP(res, e.message)
   }
 }
  */
@@ -28,7 +28,7 @@ class TransactionController {
       const transactions = await model.getTransactions()
       res.json(transactions)
     } catch (e: Error | any) {
-      handleHTTP(res, e.message, 500)
+      handleHTTP(res, e.message)
     }
   }
 
@@ -40,7 +40,7 @@ class TransactionController {
 
       res.json(transaction)
     } catch (e: Error | any) {
-      handleHTTP(res, e.message, 500)
+      handleHTTP(res, e.message)
     }
   }
 
@@ -62,7 +62,7 @@ class TransactionController {
 
       res.json(transaction)
     } catch (e: Error | any) {
-      handleHTTP(res, e.message, 500)
+      handleHTTP(res, e.message)
     }
   }
 
@@ -85,7 +85,7 @@ class TransactionController {
 
       res.json(transaction)
     } catch (e: Error | any) {
-      handleHTTP(res, e.message, 500)
+      handleHTTP(res, e.message)
     }
   }
 
@@ -95,7 +95,7 @@ class TransactionController {
       await model.delete(id)
       res.send(`Transaction whit id: ${id} deleted`)
     } catch (e: Error | any) {
-      handleHTTP(res, e.message, 500)
+      handleHTTP(res, e.message)
     }
   }
 }
