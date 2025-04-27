@@ -45,12 +45,13 @@ class TransactionController {
   }
 
   async create(req: Request, res: Response) {
-    const { amount, desc, categoryId } = req.body
+    const { amount, desc, categoryId, type } = req.body
     const userId = req.userId || ''
 
     const data: Prisma.TransactionUncheckedCreateInput = {
       userId,
       amount,
+      type,
       desc: desc || null,
       categoryId
     }

@@ -13,6 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum TransactionType {
+  expense
+  income
+}
+
 model User {
   id String @id @default(uuid())
   name String
@@ -27,6 +32,7 @@ model Transaction {
   id String @id @default(uuid())
   userId String
   amount Float
+  type TransactionType
   desc String?
   categoryId String
   category Category @relation(fields: [categoryId], references: [id])
