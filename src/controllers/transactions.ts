@@ -46,7 +46,7 @@ class TransactionController {
 
   async create(req: Request, res: Response) {
     const { amount, desc, categoryId, type } = req.body
-    const userId = req.userId || ''
+    const userId = req.userId as string
 
     const data: Prisma.TransactionUncheckedCreateInput = {
       userId,
@@ -70,7 +70,7 @@ class TransactionController {
   async update(req: Request, res: Response) {
     const { id } = req.params
     const { amount, desc, categoryId } = req.body
-    const userId = req.userId || ''
+    const userId = req.userId as string
 
     const data: Prisma.TransactionUncheckedUpdateInput = {
       userId,
