@@ -57,11 +57,13 @@ class AuthController {
     try {
       const user = await model.login(email)
       if (user) {
+        const verify = user.verified
         const match = await bcrypt.compare(password, user.password)
-        if (match) {
+        if (match && verify) {
           const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string)
           res.json({ token, user })
-        } else handleHTTP(res, 'password incorrect', 400)
+        } else if (!verify) handleHTTP(res, 'user not verify', 400)
+        else handleHTTP(res, 'password incorrect', 400)
       } else handleHTTP(res, 'user not found', 404)
     } catch (e: Error | any) {
       handleHTTP(res, e.message)
@@ -76,11 +78,40 @@ class AuthController {
 
       if (user) {
         const verified = parseInt(code, 10) === user.verifyCode
-        const expired = (Date.now() - new Date(user.createdAt).getTime()) > 1000 * 60 * 10;
+        const expired = (Date.now() - new Date(user.updatedAt).getTime()) > 1000 * 60 * 10;
         if (verified && !expired) {
           await model.verify(userId)
-          res.send('verified')
+          handleHTTP(res, 'verified', 200)
         } else handleHTTP(res, 'Code expired', 400)
+      } else handleHTTP(res, 'user not found', 404)
+    } catch (e: Error | any) {
+      handleHTTP(res, e.message)
+    }
+  }
+
+  async resendCode(req: Request, res: Response) {
+    const userId = req.userId as string
+    const verifyCode = code()
+    const date = new Date
+
+    const data: Prisma.UserUncheckedUpdateInput = {
+      verifyCode,
+      updatedAt: date
+    }
+
+    try {
+      const user = await model.getUser(userId)
+
+      if (user) {
+        const expired = (Date.now() - new Date(user.updatedAt).getTime()) > 1000 * 60 * 10;
+        if (expired) {
+          await model.resendCode(userId, data)
+          sendCode(user.email, verifyCode)
+          handleHTTP(res, 'new code sended', 200)
+        } else {
+          sendCode(userId, user.verifyCode)
+          handleHTTP(res, 'code sended', 200)
+        }
       } else handleHTTP(res, 'user not found', 404)
     } catch (e: Error | any) {
       handleHTTP(res, e.message)

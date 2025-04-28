@@ -26,6 +26,12 @@ class AuthModel {
       }
     })
   }
+  async resendCode(id: string, data: Prisma.UserUncheckedUpdateInput) {
+    return await prisma.user.update({
+      where: { id },
+      data
+    })
+  }
 }
 
 export default new AuthModel()

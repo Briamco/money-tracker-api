@@ -27,6 +27,7 @@ model User {
   verified Boolean? @default(false)
   currencyId Int
   createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
   currency Currency @relation(fields: [currencyId], references: [id])
   transactions Transaction[]
   categories Category[]
