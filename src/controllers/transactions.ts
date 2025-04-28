@@ -57,11 +57,12 @@ class TransactionController {
     }
 
     try {
-      const transaction = await model.create(data)
-      if (!amount || !categoryId) handleHTTP(res, 'All params are required', 400)
-      if (!userId) handleHTTP(res, 'UserId not found', 404)
-
-      res.json(transaction)
+      if (userId) {
+        if (amount && categoryId) {
+          const transaction = await model.create(data)
+          res.json(transaction)
+        } handleHTTP(res, 'All params are required', 400)
+      } handleHTTP(res, 'UserId not found', 404)
     } catch (e: Error | any) {
       handleHTTP(res, e.message)
     }
@@ -80,11 +81,12 @@ class TransactionController {
     }
 
     try {
-      const transaction = await model.update(id, data)
-      if (!amount || !categoryId) handleHTTP(res, 'All params are required', 400)
-      if (!userId) handleHTTP(res, 'UserId not found', 404)
-
-      res.json(transaction)
+      if (userId) {
+        if (amount && categoryId) {
+          const transaction = await model.update(id, data)
+          res.json(transaction)
+        } handleHTTP(res, 'All params are required', 400)
+      } handleHTTP(res, 'UserId not found', 404)
     } catch (e: Error | any) {
       handleHTTP(res, e.message)
     }
