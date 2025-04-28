@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Prisma } from "@prisma/client";
+import { Prisma, TransactionType } from "@prisma/client";
 import model from '../models/transactions'
 import { Error } from "../interfaces/error";
 import { handleHTTP } from "../utils/error.handle";

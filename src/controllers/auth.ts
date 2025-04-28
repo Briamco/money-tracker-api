@@ -27,7 +27,7 @@ async functionName(req: Request, res: Response) {
 
 class AuthController {
   async register(req: Request, res: Response) {
-    const { name, email, password, currency } = req.body
+    const { name, email, password, currencyId } = req.body
     const verifyCode = code()
 
     const hashed = await bcrypt.hash(password, 10)
@@ -37,7 +37,7 @@ class AuthController {
       email,
       verifyCode,
       password: hashed,
-      currency
+      currencyId
     }
 
     try {
