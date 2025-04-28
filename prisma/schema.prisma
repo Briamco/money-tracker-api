@@ -49,6 +49,7 @@ model Category {
   userId String
   name String
   icon String
+  editable Boolean @default(true)
   transaction Transaction[]
   user User @relation(fields: [userId], references: [id])
 }
