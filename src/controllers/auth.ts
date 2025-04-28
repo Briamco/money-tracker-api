@@ -79,7 +79,7 @@ class AuthController {
       const user = await model.getUser(userId)
 
       if (user) {
-        const verified = parseInt(code) === user.verifyCode
+        const verified = parseInt(code, 10) === user.verifyCode
         const expired = (Date.now() - new Date(user.createdAt).getTime()) > 1000 * 60 * 10;
         if (verified && !expired) {
           await model.verify(userId)
