@@ -46,9 +46,7 @@ class AuthController {
         const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string)
         sendCode(email, verifyCode)
         res.status(201).json({ token, user })
-      }
-
-      handleHTTP(res, 'Email in use', 400)
+      } else handleHTTP(res, 'Email in use', 400)
     } catch (e: Error | any) {
       handleHTTP(res, e.message)
     }
@@ -63,10 +61,8 @@ class AuthController {
         if (match) {
           const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET as string)
           res.json({ token, user })
-        }
-        handleHTTP(res, 'password incorrect', 400)
-      }
-      handleHTTP(res, 'user not found', 404)
+        } else handleHTTP(res, 'password incorrect', 400)
+      } else handleHTTP(res, 'user not found', 404)
     } catch (e: Error | any) {
       handleHTTP(res, e.message)
     }
@@ -84,11 +80,8 @@ class AuthController {
         if (verified && !expired) {
           await model.verify(userId)
           res.send('verified')
-        }
-        handleHTTP(res, 'Code expired', 400)
-      }
-
-      handleHTTP(res, 'user not found', 404)
+        } else handleHTTP(res, 'Code expired', 400)
+      } else handleHTTP(res, 'user not found', 404)
     } catch (e: Error | any) {
       handleHTTP(res, e.message)
     }
