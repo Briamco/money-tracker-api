@@ -76,11 +76,15 @@ class AuthController {
     try {
       const user = await model.getUser(userId)
 
+      const data: Prisma.UserUncheckedUpdateInput = {
+        verified: true
+      }
+
       if (user) {
         const verified = parseInt(code, 10) === user.verifyCode
         const expired = (Date.now() - new Date(user.updatedAt).getTime()) > 1000 * 60 * 10;
         if (verified && !expired) {
-          await model.verify(userId)
+          await model.update(userId, data)
           handleHTTP(res, 'verified', 200)
         } else handleHTTP(res, 'Code expired', 400)
       } else handleHTTP(res, 'user not found', 404)
@@ -105,7 +109,7 @@ class AuthController {
       if (user) {
         const expired = (Date.now() - new Date(user.updatedAt).getTime()) > 1000 * 60 * 10;
         if (expired) {
-          await model.resendCode(userId, data)
+          await model.update(userId, data)
           sendCode(user.email, verifyCode)
           handleHTTP(res, 'new code sended', 200)
         } else {

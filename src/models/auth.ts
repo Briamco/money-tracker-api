@@ -18,15 +18,7 @@ class AuthModel {
       where: { id }
     })
   }
-  async verify(id: string) {
-    return await prisma.user.update({
-      where: { id },
-      data: {
-        verified: true
-      }
-    })
-  }
-  async resendCode(id: string, data: Prisma.UserUncheckedUpdateInput) {
+  async update(id: string, data: Prisma.UserUncheckedUpdateInput) {
     return await prisma.user.update({
       where: { id },
       data
