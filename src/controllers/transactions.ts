@@ -96,7 +96,7 @@ class TransactionController {
     const { id } = req.params
     try {
       await model.delete(id)
-      handleHTTP(res, `Transaction whit id: ${id} deleted`, 200)
+      handleHTTP(res, `Transaction with id: ${id} deleted`, 200)
     } catch (e: Error | any) {
       handleHTTP(res, e.message)
     }
