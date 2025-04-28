@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { authRouter } from "./auth";
 import { readdirSync } from "fs";
 
 const PATH_ROUTER = `${__dirname}`
@@ -19,4 +20,4 @@ readdirSync(PATH_ROUTER).filter((fileName) => {
   }
 })
 
-export { router }
+export { router, authRouter }
