@@ -46,12 +46,12 @@ model Transaction {
 
 model Category {
   id String @id @default(uuid())
-  userId String
+  userId String?
   name String
   icon String
   editable Boolean @default(true)
   transaction Transaction[]
-  user User @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id])
 }
 
 model Currency {
