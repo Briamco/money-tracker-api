@@ -1,8 +1,7 @@
-import { Request, Response } from "express";
-import { Prisma, TransactionType } from "@prisma/client";
-import model from '../models/transactions'
-import { Error } from "../interfaces/error";
-import { handleHTTP } from "../utils/error.handle";
+import { Request, Response } from 'express';
+import { Prisma, TransactionType } from '@prisma/client';
+import model from '../models/transactions';
+import { handleHTTP } from '../utils/error.handle';
 
 declare global {
   namespace Express {
@@ -12,95 +11,123 @@ declare global {
   }
 }
 
-/**
-async functionName(req: Request, res: Response) {
-  try {
-    //code
-  } catch(e: Error | any) {
-    handleHTTP(res, e.message)
-  }
-}
- */
-
 class TransactionController {
   async getTransactions(req: Request, res: Response) {
     try {
-      const transactions = await model.getTransactions()
-      res.json(transactions)
+      const transactions = await model.getTransactions();
+      res.status(200).json(transactions);
     } catch (e: Error | any) {
-      handleHTTP(res, e.message)
+      console.error('Error getting transactions:', e);
+      handleHTTP(res, 'Failed to retrieve transactions', 500);
     }
   }
 
   async getTransaction(req: Request, res: Response) {
-    const { id } = req.params
-    try {
-      const transaction = await model.getTransaction(id)
-      if (!transaction) handleHTTP(res, 'Transaction not found', 404)
+    const { id } = req.params;
 
-      res.json(transaction)
+    if (!id) {
+      return handleHTTP(res, 'Transaction ID is required', 400);
+    }
+
+    try {
+      const transaction = await model.getTransaction(id);
+      if (!transaction) {
+        return handleHTTP(res, 'Transaction not found', 404);
+      }
+      res.status(200).json(transaction);
     } catch (e: Error | any) {
-      handleHTTP(res, e.message)
+      console.error(`Error getting transaction with id ${id}:`, e);
+      handleHTTP(res, 'Failed to retrieve transaction', 500);
     }
   }
 
   async create(req: Request, res: Response) {
-    const { amount, desc, categoryId, type } = req.body
-    const userId = req.userId as string
+    const { amount, desc, categoryId, type } = req.body;
+    const userId = req.userId as string;
+
+    if (!userId) {
+      return handleHTTP(res, 'User ID is required', 400);
+    }
+
+    if (!amount || !categoryId || !type) {
+      return handleHTTP(res, 'Amount, categoryId, and type are required', 400);
+    }
+
+    if (type !== TransactionType.income && type !== TransactionType.expense) {
+      return handleHTTP(res, 'Invalid transaction type', 400);
+    }
 
     const data: Prisma.TransactionUncheckedCreateInput = {
       userId,
       amount,
       type,
       desc: desc || null,
-      categoryId
-    }
+      categoryId,
+    };
 
     try {
-      if (userId) {
-        if (amount && categoryId) {
-          const transaction = await model.create(data)
-          res.json(transaction)
-        } else handleHTTP(res, 'All params are required', 400)
-      } else handleHTTP(res, 'UserId not found', 404)
+      const transaction = await model.create(data);
+      res.status(201).json(transaction);
     } catch (e: Error | any) {
-      handleHTTP(res, e.message)
+      console.error('Error creating transaction:', e);
+      handleHTTP(res, 'Failed to create transaction', 500);
     }
   }
 
   async update(req: Request, res: Response) {
-    const { id } = req.params
-    const { amount, desc, categoryId } = req.body
-    const userId = req.userId as string
+    const { id } = req.params;
+    const { amount, desc, categoryId } = req.body;
+    const userId = req.userId as string;
+
+    if (!id) {
+      return handleHTTP(res, 'Transaction ID is required', 400);
+    }
+
+    if (!userId) {
+      return handleHTTP(res, 'User ID is required', 400);
+    }
+
+    if (!amount || !categoryId) {
+      return handleHTTP(res, 'Amount and categoryId are required', 400);
+    }
 
     const data: Prisma.TransactionUncheckedUpdateInput = {
       userId,
       amount,
       desc: desc || null,
-      categoryId
-    }
+      categoryId,
+    };
 
     try {
-      if (userId) {
-        if (amount && categoryId) {
-          const transaction = await model.update(id, data)
-          res.json(transaction)
-        } else handleHTTP(res, 'All params are required', 400)
-      } else handleHTTP(res, 'UserId not found', 404)
+      const existingTransaction = await model.getTransaction(id);
+      if (!existingTransaction) {
+        return handleHTTP(res, 'Transaction not found', 404);
+      }
+      const updatedTransaction = await model.update(id, data);
+      res.status(200).json(updatedTransaction);
     } catch (e: Error | any) {
-      handleHTTP(res, e.message)
+      console.error(`Error updating transaction with id ${id}:`, e);
+      handleHTTP(res, 'Failed to update transaction', 500);
     }
   }
 
   async delete(req: Request, res: Response) {
-    const { id } = req.params
+    const { id } = req.params;
+    if (!id) {
+      return handleHTTP(res, 'Transaction ID is required', 400);
+    }
     try {
-      await model.delete(id)
-      handleHTTP(res, `Transaction with id: ${id} deleted`, 200)
+      const existingTransaction = await model.getTransaction(id);
+      if (!existingTransaction) {
+        return handleHTTP(res, 'Transaction not found', 404);
+      }
+      await model.delete(id);
+      res.status(200).json({ message: `Transaction with id ${id} deleted` });
     } catch (e: Error | any) {
-      handleHTTP(res, e.message)
+      console.error(`Error deleting transaction with id ${id}:`, e);
+      handleHTTP(res, 'Failed to delete transaction', 500);
     }
   }
 }
 
-export default new TransactionController()
+export default new TransactionController();

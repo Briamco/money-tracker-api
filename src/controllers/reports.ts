@@ -1,7 +1,7 @@
-import { Request, Response } from "express"
-import { handleHTTP } from "../utils/error.handle"
-import transactionsModel from "../models/transactions"
-import { TransactionType } from "@prisma/client";
+import { Request, Response } from 'express';
+import { handleHTTP } from '../utils/error.handle';
+import transactionsModel from '../models/transactions';
+import { TransactionType } from '@prisma/client';
 
 declare global {
   namespace Express {
@@ -11,43 +11,44 @@ declare global {
   }
 }
 
-/**
-async functionName(req: Request, res: Response) {
-  try {
-    //code
-  } catch(e: Error | any) {
-    handleHTTP(res, e.message)
-  }
-}
- */
-
-class reportController {
+class ReportController {
   async getAmounts(req: Request, res: Response) {
-    const userId = req.userId as string
+    const userId = req.userId as string;
 
-    const transactions = await transactionsModel.getTransactions()
-    const userTransactions = transactions.filter(tran => tran.userId === userId)
-
-    const totalIncomes = userTransactions
-      .filter(tran => tran.type === TransactionType.income)
-      .reduce((sum, tran) => sum + tran.amount, 0);
-    const totalExpense = userTransactions
-      .filter(tran => tran.type === TransactionType.expense)
-      .reduce((sum, tran) => sum + tran.amount, 0)
-    const total = totalIncomes - totalExpense
-
-    const amounts = {
-      total,
-      totalExpense,
-      totalIncomes
+    if (!userId) {
+      return handleHTTP(res, 'User ID is required', 400);
     }
 
     try {
-      res.json(amounts)
+      const transactions = await transactionsModel.getTransactions();
+      if (!transactions) {
+        return handleHTTP(res, 'Transactions not found', 404);
+      }
+
+      const userTransactions = transactions.filter(tran => tran.userId === userId);
+
+      const totalIncomes = userTransactions
+        .filter(tran => tran.type === TransactionType.income)
+        .reduce((sum, tran) => sum + tran.amount, 0);
+
+      const totalExpense = userTransactions
+        .filter(tran => tran.type === TransactionType.expense)
+        .reduce((sum, tran) => sum + tran.amount, 0);
+
+      const total = totalIncomes - totalExpense;
+
+      const amounts = {
+        total,
+        totalExpense,
+        totalIncomes,
+      };
+
+      res.status(200).json(amounts);
     } catch (e: Error | any) {
-      handleHTTP(res, e.message)
+      console.error('Error getting amounts:', e);
+      handleHTTP(res, 'Failed to retrieve amounts', 500);
     }
   }
 }
 
-export default new reportController()
+export default new ReportController();
