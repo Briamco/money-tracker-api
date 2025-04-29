@@ -14,9 +14,13 @@ declare global {
 
 class CategoryController {
   async getAllCategories(req: Request, res: Response) {
+    const userId = req.userId as string;
+
     try {
       const categories = await model.getAllCategories();
-      res.status(200).json(categories);
+
+      const userCategories = categories.filter(tran => tran.userId === userId || tran.userId === null);
+      res.status(200).json(userCategories);
     } catch (e: Error | any) {
       console.error("Error getting all categories:", e);
       handleHTTP(res, "Failed to retrieve categories", 500);
@@ -24,15 +28,16 @@ class CategoryController {
   }
 
   async getCategory(req: Request, res: Response) {
+    const userId = req.userId as string;
     const { id } = req.params;
     if (!id) {
       return handleHTTP(res, "Category ID is required", 400);
     }
     try {
       const category = await model.getCategory(id);
-      if (!category) {
-        return handleHTTP(res, "Category not found", 404);
-      }
+      if (!category) return handleHTTP(res, "Category not found", 404);
+
+      if (!(category.userId === userId)) return handleHTTP(res, "Category is not from user", 400);
       res.status(200).json(category);
     } catch (e: Error | any) {
       console.error(`Error getting category with id ${id}:`, e);
