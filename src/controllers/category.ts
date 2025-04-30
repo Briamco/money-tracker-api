@@ -3,6 +3,7 @@ import { Error } from "../interfaces/error";
 import { handleHTTP } from "../utils/error.handle";
 import model from '../models/category'
 import { Prisma } from "../../prisma/generated/client";
+import { Category } from "@prisma/client";
 
 declare global {
   namespace Express {
@@ -18,8 +19,12 @@ class CategoryController {
 
     try {
       const categories = await model.getAllCategories();
-
-      const userCategories = categories.filter(tran => tran.userId === userId || tran.userId === null);
+      const userCategories = categories
+        .filter(cat => cat.userId === userId || cat.userId === null)
+        .map(cat => ({
+          ...cat,
+          transaction: cat.transaction.filter(tran => tran.userId === userId)
+        }));
       res.status(200).json(userCategories);
     } catch (e: Error | any) {
       console.error("Error getting all categories:", e);
@@ -37,8 +42,14 @@ class CategoryController {
       const category = await model.getCategory(id);
       if (!category) return handleHTTP(res, "Category not found", 404);
 
-      if (!(category.userId === userId)) return handleHTTP(res, "Category is not from user", 400);
-      res.status(200).json(category);
+      if (category.userId === null || category.userId === userId) {
+        const userCategory = {
+          ...category,
+          transaction: category.transaction.filter(tran => tran.userId === userId)
+        }
+
+        res.status(200).json(userCategory);
+      } else handleHTTP(res, "Category is not from user", 400);
     } catch (e: Error | any) {
       console.error(`Error getting category with id ${id}:`, e);
       handleHTTP(res, "Failed to retrieve category", 500);
