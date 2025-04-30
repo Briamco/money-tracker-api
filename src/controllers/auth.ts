@@ -89,13 +89,17 @@ class AuthController {
 
   async me(req: Request, res: Response) {
     const userId = req.userId as string
+    console.log(userId)
 
     if (!userId) {
       return handleHTTP(res, 'User ID is required', 400);
     }
 
     try {
-      const user = model.getUser(userId)
+      const user = await model.getUser(userId)
+
+      if (!user) return handleHTTP(res, 'User not found', 404);
+
       res.status(200).json(user)
     } catch (e: Error | any) {
       console.error('Error during login:', e);
