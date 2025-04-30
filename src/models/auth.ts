@@ -18,6 +18,11 @@ class AuthModel {
       where: { id }
     })
   }
+  async getUserByEmail(email: string) {
+    return await prisma.user.findUnique({
+      where: { email }
+    })
+  }
   async update(id: string, data: Prisma.UserUncheckedUpdateInput) {
     return await prisma.user.update({
       where: { id },

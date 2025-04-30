@@ -87,19 +87,34 @@ class AuthController {
     }
   }
 
-  async verify(req: Request, res: Response) {
-    const { code } = req.params;
-    const userId = req.userId as string;
+  async me(req: Request, res: Response) {
+    const userId = req.userId as string
 
     if (!userId) {
       return handleHTTP(res, 'User ID is required', 400);
+    }
+
+    try {
+      const user = model.getUser(userId)
+      res.status(200).json(user)
+    } catch (e: Error | any) {
+      console.error('Error during login:', e);
+      handleHTTP(res, 'Login failed', 500);
+    }
+  }
+
+  async verify(req: Request, res: Response) {
+    const { code, email } = req.body;
+
+    if (!email) {
+      return handleHTTP(res, 'Email is required', 400);
     }
     if (!code) {
       return handleHTTP(res, 'Verification code is required', 400);
     }
 
     try {
-      const user = await model.getUser(userId);
+      const user = await model.getUserByEmail(email);
       if (!user) {
         return handleHTTP(res, 'User not found', 404);
       }
@@ -111,7 +126,7 @@ class AuthController {
         const data: Prisma.UserUncheckedUpdateInput = {
           verified: true,
         };
-        await model.update(userId, data);
+        await model.update(user.id, data);
         res.status(200).json({ message: 'User verified successfully' });
       } else if (!isVerified) {
         return handleHTTP(res, 'Invalid verification code', 400);
@@ -125,14 +140,14 @@ class AuthController {
   }
 
   async resendCode(req: Request, res: Response) {
-    const userId = req.userId as string;
+    const { email } = req.body;
 
-    if (!userId) {
-      return handleHTTP(res, 'User ID is required', 400);
+    if (!email) {
+      return handleHTTP(res, 'Email is required', 400);
     }
 
     try {
-      const user = await model.getUser(userId);
+      const user = await model.getUserByEmail(email);
       if (!user) {
         return handleHTTP(res, 'User not found', 404);
       }
@@ -144,8 +159,8 @@ class AuthController {
         updatedAt: new Date(),
       };
 
-      await model.update(userId, updateData);
-      sendCode(user.email, newVerifyCode); //send new code regardless of expiration
+      sendCode(email, isExpired ? newVerifyCode : user.verifyCode); //send new code regardless of expiration
+      if (isExpired) await model.update(user.id, updateData);
 
       res.status(200).json({ message: isExpired ? 'New code sent' : 'Code resent' });
     } catch (e: Error | any) {
