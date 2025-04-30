@@ -13,9 +13,13 @@ declare global {
 
 class TransactionController {
   async getTransactions(req: Request, res: Response) {
+    const userId = req.userId as string
+
     try {
       const transactions = await model.getTransactions();
-      res.status(200).json(transactions);
+
+      const userTransactions = transactions.filter(tran => tran.userId === userId)
+      res.status(200).json(userTransactions);
     } catch (e: Error | any) {
       console.error('Error getting transactions:', e);
       handleHTTP(res, 'Failed to retrieve transactions', 500);
@@ -23,6 +27,7 @@ class TransactionController {
   }
 
   async getTransaction(req: Request, res: Response) {
+    const userId = req.userId as string
     const { id } = req.params;
 
     if (!id) {
@@ -31,9 +36,9 @@ class TransactionController {
 
     try {
       const transaction = await model.getTransaction(id);
-      if (!transaction) {
-        return handleHTTP(res, 'Transaction not found', 404);
-      }
+      if (!transaction) return handleHTTP(res, 'Transaction not found', 404);
+
+      if (transaction.userId !== userId) return handleHTTP(res, 'Transaction not from user', 400)
       res.status(200).json(transaction);
     } catch (e: Error | any) {
       console.error(`Error getting transaction with id ${id}:`, e);
@@ -100,9 +105,9 @@ class TransactionController {
 
     try {
       const existingTransaction = await model.getTransaction(id);
-      if (!existingTransaction) {
-        return handleHTTP(res, 'Transaction not found', 404);
-      }
+      if (!existingTransaction) return handleHTTP(res, 'Transaction not found', 404);
+      if (existingTransaction.userId !== userId) return handleHTTP(res, 'Transaction not from user', 400)
+
       const updatedTransaction = await model.update(id, data);
       res.status(200).json(updatedTransaction);
     } catch (e: Error | any) {
@@ -112,15 +117,18 @@ class TransactionController {
   }
 
   async delete(req: Request, res: Response) {
+    const userId = req.userId as string
     const { id } = req.params;
+
     if (!id) {
       return handleHTTP(res, 'Transaction ID is required', 400);
     }
+
     try {
       const existingTransaction = await model.getTransaction(id);
-      if (!existingTransaction) {
-        return handleHTTP(res, 'Transaction not found', 404);
-      }
+      if (!existingTransaction) return handleHTTP(res, 'Transaction not found', 404);
+      if (existingTransaction.userId !== userId) return handleHTTP(res, 'Transaction not from user', 400)
+
       await model.delete(id);
       res.status(200).json({ message: `Transaction with id ${id} deleted` });
     } catch (e: Error | any) {
