@@ -178,7 +178,7 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": "../../../.env",
+    "rootEnvPath": null,
     "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../..",
@@ -199,7 +199,7 @@ const config = {
   },
   "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated/client\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nenum TransactionType {\n  expense\n  income\n}\n\nmodel User {\n  id           String        @id @default(uuid())\n  name         String\n  email        String        @unique\n  password     String\n  verifyCode   Int\n  verified     Boolean?      @default(false)\n  currencyId   Int\n  createdAt    DateTime      @default(now())\n  updatedAt    DateTime      @default(now())\n  currency     Currency      @relation(fields: [currencyId], references: [id])\n  transactions Transaction[]\n  categories   Category[]\n}\n\nmodel Transaction {\n  id         String          @id @default(uuid())\n  userId     String\n  amount     Float\n  type       TransactionType\n  desc       String?\n  categoryId String\n  category   Category        @relation(fields: [categoryId], references: [id])\n  user       User            @relation(fields: [userId], references: [id])\n}\n\nmodel Category {\n  id          String        @id @default(uuid())\n  userId      String?\n  name        String\n  icon        String\n  editable    Boolean       @default(true)\n  transaction Transaction[]\n  user        User?         @relation(fields: [userId], references: [id])\n}\n\nmodel Currency {\n  id       Int    @id @default(autoincrement())\n  currency String\n  country  String\n  users    User[]\n}\n",
   "inlineSchemaHash": "f8825fa7af6c3d073c71caec81046519fd9967c66c2a5155827248b202e27be1",
-  "copyEngine": true
+  "copyEngine": false
 }
 config.dirname = '/'
 
