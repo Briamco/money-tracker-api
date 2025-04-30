@@ -58,8 +58,9 @@ model Category {
 }
 
 model Currency {
-  id       Int    @id @default(autoincrement())
-  currency String
-  country  String
-  users    User[]
+  id        Int    @id @default(autoincrement())
+  currency  String
+  country   String
+  countryId String
+  users     User[]
 }

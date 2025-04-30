@@ -151,7 +151,8 @@ exports.Prisma.CategoryScalarFieldEnum = {
 exports.Prisma.CurrencyScalarFieldEnum = {
   id: 'id',
   currency: 'currency',
-  country: 'country'
+  country: 'country',
+  countryId: 'countryId'
 };
 
 exports.Prisma.SortOrder = {

@@ -4736,18 +4736,21 @@ export namespace Prisma {
     id: number | null
     currency: string | null
     country: string | null
+    countryId: string | null
   }
 
   export type CurrencyMaxAggregateOutputType = {
     id: number | null
     currency: string | null
     country: string | null
+    countryId: string | null
   }
 
   export type CurrencyCountAggregateOutputType = {
     id: number
     currency: number
     country: number
+    countryId: number
     _all: number
   }
 
@@ -4764,18 +4767,21 @@ export namespace Prisma {
     id?: true
     currency?: true
     country?: true
+    countryId?: true
   }
 
   export type CurrencyMaxAggregateInputType = {
     id?: true
     currency?: true
     country?: true
+    countryId?: true
   }
 
   export type CurrencyCountAggregateInputType = {
     id?: true
     currency?: true
     country?: true
+    countryId?: true
     _all?: true
   }
 
@@ -4869,6 +4875,7 @@ export namespace Prisma {
     id: number
     currency: string
     country: string
+    countryId: string
     _count: CurrencyCountAggregateOutputType | null
     _avg: CurrencyAvgAggregateOutputType | null
     _sum: CurrencySumAggregateOutputType | null
@@ -4894,6 +4901,7 @@ export namespace Prisma {
     id?: boolean
     currency?: boolean
     country?: boolean
+    countryId?: boolean
     users?: boolean | Currency$usersArgs<ExtArgs>
     _count?: boolean | CurrencyCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["currency"]>
@@ -4902,21 +4910,24 @@ export namespace Prisma {
     id?: boolean
     currency?: boolean
     country?: boolean
+    countryId?: boolean
   }, ExtArgs["result"]["currency"]>
 
   export type CurrencySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     currency?: boolean
     country?: boolean
+    countryId?: boolean
   }, ExtArgs["result"]["currency"]>
 
   export type CurrencySelectScalar = {
     id?: boolean
     currency?: boolean
     country?: boolean
+    countryId?: boolean
   }
 
-  export type CurrencyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "currency" | "country", ExtArgs["result"]["currency"]>
+  export type CurrencyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "currency" | "country" | "countryId", ExtArgs["result"]["currency"]>
   export type CurrencyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Currency$usersArgs<ExtArgs>
     _count?: boolean | CurrencyCountOutputTypeDefaultArgs<ExtArgs>
@@ -4933,6 +4944,7 @@ export namespace Prisma {
       id: number
       currency: string
       country: string
+      countryId: string
     }, ExtArgs["result"]["currency"]>
     composites: {}
   }
@@ -5360,6 +5372,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Currency", 'Int'>
     readonly currency: FieldRef<"Currency", 'String'>
     readonly country: FieldRef<"Currency", 'String'>
+    readonly countryId: FieldRef<"Currency", 'String'>
   }
     
 
@@ -5847,7 +5860,8 @@ export namespace Prisma {
   export const CurrencyScalarFieldEnum: {
     id: 'id',
     currency: 'currency',
-    country: 'country'
+    country: 'country',
+    countryId: 'countryId'
   };
 
   export type CurrencyScalarFieldEnum = (typeof CurrencyScalarFieldEnum)[keyof typeof CurrencyScalarFieldEnum]
@@ -6185,6 +6199,7 @@ export namespace Prisma {
     id?: IntFilter<"Currency"> | number
     currency?: StringFilter<"Currency"> | string
     country?: StringFilter<"Currency"> | string
+    countryId?: StringFilter<"Currency"> | string
     users?: UserListRelationFilter
   }
 
@@ -6192,6 +6207,7 @@ export namespace Prisma {
     id?: SortOrder
     currency?: SortOrder
     country?: SortOrder
+    countryId?: SortOrder
     users?: UserOrderByRelationAggregateInput
   }
 
@@ -6202,6 +6218,7 @@ export namespace Prisma {
     NOT?: CurrencyWhereInput | CurrencyWhereInput[]
     currency?: StringFilter<"Currency"> | string
     country?: StringFilter<"Currency"> | string
+    countryId?: StringFilter<"Currency"> | string
     users?: UserListRelationFilter
   }, "id">
 
@@ -6209,6 +6226,7 @@ export namespace Prisma {
     id?: SortOrder
     currency?: SortOrder
     country?: SortOrder
+    countryId?: SortOrder
     _count?: CurrencyCountOrderByAggregateInput
     _avg?: CurrencyAvgOrderByAggregateInput
     _max?: CurrencyMaxOrderByAggregateInput
@@ -6223,6 +6241,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Currency"> | number
     currency?: StringWithAggregatesFilter<"Currency"> | string
     country?: StringWithAggregatesFilter<"Currency"> | string
+    countryId?: StringWithAggregatesFilter<"Currency"> | string
   }
 
   export type UserCreateInput = {
@@ -6453,6 +6472,7 @@ export namespace Prisma {
   export type CurrencyCreateInput = {
     currency: string
     country: string
+    countryId: string
     users?: UserCreateNestedManyWithoutCurrencyInput
   }
 
@@ -6460,12 +6480,14 @@ export namespace Prisma {
     id?: number
     currency: string
     country: string
+    countryId: string
     users?: UserUncheckedCreateNestedManyWithoutCurrencyInput
   }
 
   export type CurrencyUpdateInput = {
     currency?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
+    countryId?: StringFieldUpdateOperationsInput | string
     users?: UserUpdateManyWithoutCurrencyNestedInput
   }
 
@@ -6473,6 +6495,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
+    countryId?: StringFieldUpdateOperationsInput | string
     users?: UserUncheckedUpdateManyWithoutCurrencyNestedInput
   }
 
@@ -6480,17 +6503,20 @@ export namespace Prisma {
     id?: number
     currency: string
     country: string
+    countryId: string
   }
 
   export type CurrencyUpdateManyMutationInput = {
     currency?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
+    countryId?: StringFieldUpdateOperationsInput | string
   }
 
   export type CurrencyUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
+    countryId?: StringFieldUpdateOperationsInput | string
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -6851,6 +6877,7 @@ export namespace Prisma {
     id?: SortOrder
     currency?: SortOrder
     country?: SortOrder
+    countryId?: SortOrder
   }
 
   export type CurrencyAvgOrderByAggregateInput = {
@@ -6861,12 +6888,14 @@ export namespace Prisma {
     id?: SortOrder
     currency?: SortOrder
     country?: SortOrder
+    countryId?: SortOrder
   }
 
   export type CurrencyMinOrderByAggregateInput = {
     id?: SortOrder
     currency?: SortOrder
     country?: SortOrder
+    countryId?: SortOrder
   }
 
   export type CurrencySumOrderByAggregateInput = {
@@ -7337,12 +7366,14 @@ export namespace Prisma {
   export type CurrencyCreateWithoutUsersInput = {
     currency: string
     country: string
+    countryId: string
   }
 
   export type CurrencyUncheckedCreateWithoutUsersInput = {
     id?: number
     currency: string
     country: string
+    countryId: string
   }
 
   export type CurrencyCreateOrConnectWithoutUsersInput = {
@@ -7420,12 +7451,14 @@ export namespace Prisma {
   export type CurrencyUpdateWithoutUsersInput = {
     currency?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
+    countryId?: StringFieldUpdateOperationsInput | string
   }
 
   export type CurrencyUncheckedUpdateWithoutUsersInput = {
     id?: IntFieldUpdateOperationsInput | number
     currency?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
+    countryId?: StringFieldUpdateOperationsInput | string
   }
 
   export type TransactionUpsertWithWhereUniqueWithoutUserInput = {

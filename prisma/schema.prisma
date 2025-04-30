@@ -61,5 +61,6 @@ model Currency {
   id Int @id @default(autoincrement())
   currency String
   country String
+  countryId String
   users User[]
 }

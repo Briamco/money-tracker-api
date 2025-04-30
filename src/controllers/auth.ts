@@ -89,7 +89,6 @@ class AuthController {
 
   async me(req: Request, res: Response) {
     const userId = req.userId as string
-    console.log(userId)
 
     if (!userId) {
       return handleHTTP(res, 'User ID is required', 400);
