@@ -6,8 +6,9 @@ const authRouter = Router()
 
 authRouter.post('/register', controllers.register)
 authRouter.post('/login', controllers.login)
+authRouter.post('/logout', controllers.logout)
 authRouter.post('/me', authMiddleware, controllers.me)
-authRouter.post('/verify', authMiddleware, controllers.verify)
-authRouter.put('/resendCode', authMiddleware, controllers.resendCode)
+authRouter.post('/verify', controllers.verify)
+authRouter.put('/resendCode', controllers.resendCode)
 
 export { authRouter }

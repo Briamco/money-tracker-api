@@ -99,7 +99,7 @@ class AuthController {
       res.status(200).json(user)
     } catch (e: Error | any) {
       console.error('Error during login:', e);
-      handleHTTP(res, 'Login failed', 500);
+      handleHTTP(res, 'Getting user failed', 500);
     }
   }
 
@@ -125,6 +125,7 @@ class AuthController {
       if (isVerified && !isExpired) {
         const data: Prisma.UserUncheckedUpdateInput = {
           verified: true,
+          updatedAt: new Date()
         };
         await model.update(user.id, data);
         res.status(200).json({ message: 'User verified successfully' });
@@ -167,6 +168,10 @@ class AuthController {
       console.error('Error resending code:', e);
       handleHTTP(res, 'Failed to resend code', 500);
     }
+  }
+
+  async logout(req: Request, res: Response) {
+    res.status(200).json({ message: 'Logged out successfully' });
   }
 }
 
