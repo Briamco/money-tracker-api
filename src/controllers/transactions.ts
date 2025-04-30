@@ -100,6 +100,7 @@ class TransactionController {
       userId,
       amount,
       desc: desc || null,
+      updatedAt: new Date(),
       categoryId,
     };
 

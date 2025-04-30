@@ -27,7 +27,7 @@ class ReportController {
 
       const userTransactions = transactions.filter(tran => tran.userId === userId);
 
-      const totalIncomes = userTransactions
+      const totalIncome = userTransactions
         .filter(tran => tran.type === TransactionType.income)
         .reduce((sum, tran) => sum + tran.amount, 0);
 
@@ -35,12 +35,12 @@ class ReportController {
         .filter(tran => tran.type === TransactionType.expense)
         .reduce((sum, tran) => sum + tran.amount, 0);
 
-      const total = totalIncomes - totalExpense;
+      const total = totalIncome - totalExpense;
 
       const amounts = {
         total,
         totalExpense,
-        totalIncomes,
+        totalIncome,
       };
 
       res.status(200).json(amounts);
