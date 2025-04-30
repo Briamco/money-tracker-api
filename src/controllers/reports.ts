@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { handleHTTP } from '../utils/error.handle';
 import transactionsModel from '../models/transactions';
-import { TransactionType } from '@prisma/client';
+import { TransactionType } from "../../prisma/generated/client";
 
 declare global {
   namespace Express {
